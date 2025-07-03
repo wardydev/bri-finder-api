@@ -126,7 +126,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/hairulwardi/working-area/wardygital/nodejs-template/src/prisma/client",
+      "value": "/home/hairulwardi/working-area/ojik/bri-finder-api/src/prisma/client",
       "fromEnvVar": null
     },
     "config": {
@@ -144,7 +144,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/hairulwardi/working-area/wardygital/nodejs-template/prisma/schema.prisma",
+    "sourceFilePath": "/home/hairulwardi/working-area/ojik/bri-finder-api/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
