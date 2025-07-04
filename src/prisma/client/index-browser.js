@@ -126,10 +126,38 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
+  password: 'password',
+  role: 'role',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AtmLocationsScalarFieldEnum = {
+  id: 'id',
+  lng: 'lng',
+  lat: 'lat',
+  bank: 'bank',
+  name: 'name',
+  address: 'address',
+  hours: 'hours',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AtmLocationImagesScalarFieldEnum = {
+  id: 'id',
+  image_url: 'image_url',
+  atm_locationId: 'atm_locationId'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  author: 'author',
+  text: 'text',
+  atm_locationId: 'atm_locationId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -141,10 +169,16 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.UserRole = exports.$Enums.UserRole = {
+  USER: 'USER',
+  ADMIN: 'ADMIN'
+};
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  AtmLocations: 'AtmLocations',
+  AtmLocationImages: 'AtmLocationImages',
+  Comment: 'Comment'
 };
 
 /**

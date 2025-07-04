@@ -1,39 +1,16 @@
 import { type NextFunction, type Request, type Response } from 'express'
 import jwt, { type Secret } from 'jsonwebtoken'
 
-import * as userRepository from '../app/user/user.repository'
+import { getUserById } from '../app/auth/auth.repository'
+import { type UserRole } from '../prisma/client'
 import { MESSAGES, ResponseHandler, config } from '../utils'
-
-interface RolePayload {
-	id: number
-	name: string
-}
-
-interface ApplicationPayload {
-	id: number
-	name: string
-}
 
 export interface PayloadAccessToken {
 	type: string
-	userId: string
-	applicationCode: string
-	application: ApplicationPayload
-	role: RolePayload
-	iat: number
-	exp: number
-}
-
-export interface PayloadRefreshToken {
-	type: string
-	userId: string
-	iat: number
-	exp: number
-}
-
-export interface PayloadAuthToken {
-	type: string
-	userId: string
+	id: string
+	name: string
+	email: string
+	role: UserRole
 	iat: number
 	exp: number
 }
@@ -41,10 +18,6 @@ export interface PayloadAuthToken {
 type AuthType = 'AUTH' | 'ACCESS' | 'REFRESH'
 
 const SECRET_KEY: Secret = config.jwt.accessPrivateKey
-
-export interface RequestWithAuthToken extends Request {
-	tokenPayload: PayloadAuthToken | PayloadRefreshToken
-}
 
 export interface RequestWithAccessToken extends Request {
 	tokenPayload: PayloadAccessToken
@@ -65,10 +38,7 @@ export const auth =
 				ResponseHandler.unauthorized(next, 'Token tidak ditemukan.')
 				return
 			}
-			const decoded = jwt.verify(token, SECRET_KEY) as
-				| PayloadAccessToken
-				| PayloadAuthToken
-				| PayloadRefreshToken
+			const decoded = jwt.verify(token, SECRET_KEY) as PayloadAccessToken
 			if (decoded.type !== type) {
 				ResponseHandler.forbidden(next, 'Anda tidak memiliki akses.')
 				return
@@ -78,16 +48,10 @@ export const auth =
 				ResponseHandler.unauthorized(next, 'Token tidak valid.')
 			}
 			console.log('Decoded Payload:', JSON.stringify(decoded, null, 2))
-			if (type === 'AUTH' || type === 'REFRESH') {
-				;(request as RequestWithAuthToken).tokenPayload = decoded as
-					| PayloadAuthToken
-					| PayloadRefreshToken
-			}
 			if (type === 'ACCESS') {
-				;(request as RequestWithAccessToken).tokenPayload =
-					decoded as PayloadAccessToken
+				;(request as RequestWithAccessToken).tokenPayload = decoded
 			}
-			const user = await userRepository.getUser(Number(decoded.userId))
+			const user = await getUserById(Number(decoded.id))
 			if (!user) {
 				ResponseHandler.forbidden(next, MESSAGES.ERROR.NOT_FOUND.USER)
 				return

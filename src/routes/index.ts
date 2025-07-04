@@ -1,15 +1,19 @@
 import { type NextFunction, type Request, type Response, Router } from 'express'
 
+import mapLocationRoute from '../app/atm-location/atm-location.route'
+import authRoute from '../app/auth/auth.route'
+import commentRoute from '../app/comments/comments.route'
 import uploadRoute from '../app/upload-fs/upload-fs.routes'
-import usersRoute from '../app/user/user.route'
 import { ERROR_CODE } from '../interface'
 import { AppError } from '../middleware'
 import { ResponseHandler } from '../utils'
 
 const route = Router()
 
-route.use('/users', usersRoute)
+route.use('/auth', authRoute)
 route.use('/upload', uploadRoute)
+route.use('/map-location', mapLocationRoute)
+route.use('/comment', commentRoute)
 
 route.get('/', (req: Request, res: Response) => {
 	ResponseHandler.ok(res, null, 'Hello World 🌍🚀')

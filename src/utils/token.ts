@@ -1,8 +1,15 @@
 import jwt from 'jsonwebtoken'
 
+import { type UserRole } from '../prisma/client'
+
 import { config } from './config'
 
-export const generateToken = (user: any) => {
+export const generateToken = (user: {
+	id: number
+	name: string
+	email: string
+	role: UserRole
+}) => {
 	const secret = config.jwt.accessPrivateKey
 	const expiresIn = 60 * 60 * config.jwt.expHour
 	const payload = {
@@ -10,7 +17,7 @@ export const generateToken = (user: any) => {
 		userId: user.id,
 		email: user.email,
 		name: user.name,
-		roles: user.roleIds,
+		roles: [user.role],
 	}
 	return jwt.sign(payload, secret, { expiresIn })
 }
