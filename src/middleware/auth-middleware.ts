@@ -26,10 +26,14 @@ export interface RequestWithAccessToken extends Request {
 }
 
 export const auth =
-	(type: AuthType) =>
+	(type: AuthType, roles: UserRole[]) =>
 	async (request: Request, response: Response, next: NextFunction) => {
 		if (!type) {
 			ResponseHandler.badRequest(next, 'Auth type tidak ditemukan.')
+			return
+		}
+		if (!roles || roles.length === 0) {
+			ResponseHandler.badRequest(next, 'Role tidak ditemukan.')
 			return
 		}
 		try {
@@ -44,6 +48,12 @@ export const auth =
 				return
 			}
 			console.log('Decoded : ', JSON.stringify(decoded, null, 2))
+
+			if (!roles.includes(decoded.role)) {
+				ResponseHandler.forbidden(next, 'Anda tidak memiliki akses.')
+				return
+			}
+
 			if (Object.keys(decoded).length === 0) {
 				ResponseHandler.unauthorized(next, 'Token tidak valid.')
 			}

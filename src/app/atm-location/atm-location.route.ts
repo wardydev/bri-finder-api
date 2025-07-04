@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { auth } from 'src/middleware/auth-middleware'
 
 import { catchAsync, compressAndSaveMultipleImage, upload } from '../../utils'
 
@@ -8,13 +9,30 @@ const route = Router()
 
 route.post(
 	'/',
+	auth('ACCESS', ['ADMIN']),
 	upload.array('files', 5),
 	compressAndSaveMultipleImage,
 	catchAsync(mapLocationController.createMapLocation),
 )
-route.get('/', catchAsync(mapLocationController.getMapLocations))
-route.get('/:id', catchAsync(mapLocationController.getMapLocation))
-route.patch('/:id', catchAsync(mapLocationController.updateMapLocation))
-route.delete('/:id', catchAsync(mapLocationController.deleteMapLocation))
+route.get(
+	'/',
+	auth('ACCESS', ['ADMIN']),
+	catchAsync(mapLocationController.getMapLocations),
+)
+route.get(
+	'/:id',
+	auth('ACCESS', ['ADMIN']),
+	catchAsync(mapLocationController.getMapLocation),
+)
+route.patch(
+	'/:id',
+	auth('ACCESS', ['ADMIN']),
+	catchAsync(mapLocationController.updateMapLocation),
+)
+route.delete(
+	'/:id',
+	auth('ACCESS', ['ADMIN']),
+	catchAsync(mapLocationController.deleteMapLocation),
+)
 
 export default route

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { validateRequest } from 'src/middleware'
+import { auth } from 'src/middleware/auth-middleware'
 
 import { catchAsync } from '../../utils'
 
@@ -10,16 +11,30 @@ const route = Router()
 
 route.post(
 	'/',
+	auth('ACCESS', ['USER']),
 	validateRequest(createCommentSchema, 'body'),
 	catchAsync(commentController.createComment),
 )
-route.get('/', catchAsync(commentController.getComments))
-route.get('/:id', catchAsync(commentController.getComment))
+route.get(
+	'/',
+	auth('ACCESS', ['USER']),
+	catchAsync(commentController.getComments),
+)
+route.get(
+	'/:id',
+	auth('ACCESS', ['USER']),
+	catchAsync(commentController.getComment),
+)
 route.patch(
 	'/:id',
+	auth('ACCESS', ['USER']),
 	validateRequest(updateCommentSchema, 'body'),
 	catchAsync(commentController.updateComment),
 )
-route.delete('/:id', catchAsync(commentController.deleteComment))
+route.delete(
+	'/:id',
+	auth('ACCESS', ['USER']),
+	catchAsync(commentController.deleteComment),
+)
 
 export default route
